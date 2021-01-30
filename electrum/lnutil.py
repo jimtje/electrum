@@ -257,15 +257,15 @@ class PaymentAttemptFailureDetails(NamedTuple):
 
 class PaymentAttemptLog(NamedTuple):
     success: bool
-    route: Optional['LNPaymentRoute'] = None
     preimage: Optional[bytes] = None
     failure_details: Optional[PaymentAttemptFailureDetails] = None
     exception: Optional[Exception] = None
 
     def formatted_tuple(self):
+        return 'N/A', 'N/A', 'N/A'
         if not self.exception:
             route = self.route
-            route_str = '%d'%len(route)
+            route_str = ''#'%d'%len(route)
             short_channel_id = None
             if not self.success:
                 sender_idx = self.failure_details.sender_idx
@@ -288,11 +288,14 @@ class PaymentAttemptLog(NamedTuple):
         return route_str, chan_str, message
 
 
-class BarePaymentAttemptLog(NamedTuple):
+class HtlcLog(NamedTuple):
     success: bool
+    amount_msat: int
+    route: Optional['LNPaymentRoute'] = None
     preimage: Optional[bytes] = None
     error_bytes: Optional[bytes] = None
     failure_message: Optional['OnionRoutingFailureMessage'] = None
+    sender_idx: Optional[int] = None
 
 
 class LightningError(Exception): pass
